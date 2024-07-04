@@ -1,0 +1,25 @@
+apiVersion: maistra.io/v2
+kind: ServiceMeshControlPlane
+metadata:
+  name: basic
+  namespace: istio-system
+spec:
+  gateways:
+    ingress:
+      enabled: true
+      service:
+        type: LoadBalancer
+  tracing:
+    type: None
+  policy:
+    type: Istiod
+  addons:
+    grafana:
+      enabled: false
+    kiali:
+      enabled: false
+    prometheus:
+      enabled: false
+  telemetry:
+    type: Istiod
+  version: v2.5
