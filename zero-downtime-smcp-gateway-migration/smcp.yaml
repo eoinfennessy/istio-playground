@@ -13,6 +13,10 @@ spec:
     type: None
   policy:
     type: Istiod
+  proxy:
+    accessLogging:
+      file:
+        name: /dev/stdout
   addons:
     grafana:
       enabled: false
