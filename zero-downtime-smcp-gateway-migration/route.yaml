@@ -1,0 +1,18 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: httpbin-gateway
+  namespace: httpbin
+spec:
+  host: httpbin-gateway.apps.__BASE_DOMAIN__
+  port:
+    targetPort: http2
+  to:
+    kind: Service
+    name: httpbin-ingress
+    weight: 100
+#  alternateBackends:
+#    - kind: Service
+#      name: httpbin-ingress-canary
+#      weight: 10
+  wildcardPolicy: None

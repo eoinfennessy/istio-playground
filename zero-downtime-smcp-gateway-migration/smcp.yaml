@@ -9,6 +9,10 @@ spec:
       enabled: true
       service:
         type: LoadBalancer
+    additionalIngress:
+      httpbin-ingress:
+        enabled: true
+        namespace: httpbin
   tracing:
     type: None
   policy:

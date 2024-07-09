@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin-ingress-canary
+  namespace: httpbin
+spec:
+  selector:
+    app: httpbin-ingress-canary
+    istio: ingressgateway
+  ports:
+    - name: http2
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin-ingress-canary
+  namespace: httpbin
+spec:
+  selector:
+    matchLabels:
+      app: httpbin-ingress-canary
+      istio: ingressgateway
+  template:
+    metadata:
+      annotations:
+        inject.istio.io/templates: gateway
+      labels:
+        app: httpbin-ingress-canary
+        istio: ingressgateway
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - name: istio-proxy
+          image: auto
+      serviceAccountName: httpbin-ingress-canary
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: httpbin-ingress-canary
+  namespace: httpbin
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secret-reader
+  namespace: httpbin
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: httpbin-ingress-canary-secret-reader
+  namespace: httpbin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: secret-reader
+subjects:
+  - kind: ServiceAccount
+    name: httpbin-ingress-canary
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: httpbin-ingress-canary
+  namespace: httpbin
+spec:
+  podSelector:
+    matchLabels:
+      app: httpbin-ingress-canary
+      istio: ingressgateway
+  ingress:
+    - {}
+  policyTypes:
+    - Ingress
