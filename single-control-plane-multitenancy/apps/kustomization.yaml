@@ -1,0 +1,3 @@
+resources:
+  - https://raw.githubusercontent.com/istio/istio/master/samples/sleep/sleep.yaml
+  - https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml
